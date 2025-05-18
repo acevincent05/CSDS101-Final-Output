@@ -136,6 +136,11 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()  
+
     def blood_types(self):
         try:
             connection, cursor = self.connection_cursor()
@@ -163,6 +168,43 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                 cursor.close()
                 connection.close()  
 
+    def add_donation(self, donor_id, name, blood_type_id, age, date_birth, first_time):
+        try:
+            connection, cursor = self.connection_cursor()
+
+            # Insert into Donors
+            donor_query = '''
+                INSERT INTO Donors (DonorID, Name, BloodTypeID)
+                VALUES (%s, %s, %s)
+            '''
+            cursor.execute(donor_query, (donor_id, name, blood_type_id))
+
+            # Insert into DonorInfo
+            donor_info_query = '''
+                INSERT INTO DonorInfo (DonorID, Name, Age, DateOfBirth, FirstTimeDonor)
+                VALUES (%s, %s, %s, %s, %s)
+            '''
+            cursor.execute(donor_info_query, (donor_id, name, age, date_birth, first_time))
+
+            print("Donation data added successfully.") 
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()  
+
+
+def get_donation_data():
+    donor_id = input("Enter Donor ID: ")
+    name = input("Enter Donor Name: ")
+    blood_type_id = input("Enter Blood Type ID: ")
+    age = int(input("Enter Age: "))
+    date_birth = input("Enter Date of Birth (YYYY-MM-DD): ")
+    first_time = input("First Time Donor? (Yes/No): ")
+    return donor_id, name, blood_type_id, age, date_birth, first_time
 
 
 def DB_credentials(): # ito po ay para i-require ang user na ibigay the credentials ng SQL database 
@@ -201,6 +243,12 @@ def main(): # ito po yung main menu
             os.system('cls')
 
             SQL_Blood_Donation_DB.blood_types()
+
+        if choice == '4':
+            os.system('cls')
+
+            donor_id, name, blood_type_id, age, date_birth, first_time = get_donation_data()
+            SQL_Blood_Donation_DB.add_donation(donor_id, name, blood_type_id, age, date_birth, first_time)
 
         elif choice == '0':
             print("Exiting program")
