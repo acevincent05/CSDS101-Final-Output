@@ -168,24 +168,26 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                 cursor.close() # ito po ang magclo-close ng cursor ng SQL
                 connection.close() # tatanggalin na rin po nito ang connections once na matapos po ang lahat 
 
-    def add_donation(self, donor_id, name, blood_type_id, age, date_birth, first_time):
+    def add_donation(self, donor_id, name, blood_type_id, age, date_birth, first_time): # ito po ang method na maglalagay ng new donor infos
         try: # ito po ay sa pagcheck kung nagana ng walang error
             connection, cursor = self.connection_cursor() # ito po ay para magconnect sa MySQL
 
             donor_query = '''
                 INSERT INTO Donors (DonorID, Name, BloodTypeID)
                 VALUES (%s, %s, %s)
-            '''
-            cursor.execute(donor_query, (donor_id, name, blood_type_id))
+            ''' # ito po ay maglalagay muna sa table ng Donors
+
+            cursor.execute(donor_query, (donor_id, name, blood_type_id)) # ito po ay para i-run yung script na nakalagay sa query variable sa MySQL database
 
             donor_info_query = '''
                 INSERT INTO DonorInfo (DonorID, Name, Age, DateOfBirth, FirstTimeDonor)
                 VALUES (%s, %s, %s, %s, %s)
-            '''
-            cursor.execute(donor_info_query, (donor_id, name, age, date_birth, first_time))
-            connection.commit()
+            ''' # ito po ay maglalagay naman sa table ng DonorInfo
 
-            print("Donation data added successfully.") 
+            cursor.execute(donor_info_query, (donor_id, name, age, date_birth, first_time)) # ito po ay para i-run yung script na nakalagay sa query variable sa MySQL database
+            connection.commit() # ito po ay para gawin ang changes sa database
+
+            print("Donation data added successfully.") # ito po ang magsasabi na nailagay na ang bagong donor
 
         except mysql.connector.Error as err: # ito po ay sasalo sa magiging kung anumang error sa database 
             print(f"Error: {err}") # ito po ang magsasabi ng error na binibigay ng database 
@@ -196,28 +198,28 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                 connection.close() # tatanggalin na rin po nito ang connections once na matapos po ang lahat 
 
 
-    def update_donation(self, donor_id, name, blood_type_id, age, date_birth, first_time):
+    def update_donation(self, donor_id, name, blood_type_id, age, date_birth, first_time): # ito po ang method para makapag-edit ng content ng database
         try:
-            connection, cursor = self.connection_cursor()
+            connection, cursor = self.connection_cursor() # ito po ay para magconnect sa MySQL
 
-            # Insert into Donors
             donor_query = '''
                 UPDATE Donors
                 SET Name = %s, BloodTypeID = %s
                 WHERE DonorID = %s
-            '''
-            cursor.execute(donor_query, (name, blood_type_id, donor_id))
+            ''' # ito po yung SQL script na mag-eedit muna sa Donors table sa pamamagitan ng DonorID 
 
-            # Update DonorInfo table
+            cursor.execute(donor_query, (name, blood_type_id, donor_id)) # ito po ay para i-run yung script na nakalagay sa query variable sa MySQL database
+
             donor_info_query = '''
                 UPDATE DonorInfo
                 SET Name = %s, Age = %s, DateOfBirth = %s, FirstTimeDonor = %s
                 WHERE DonorID = %s
-            '''
-            cursor.execute(donor_info_query, (name, age, date_birth, first_time, donor_id))
-            connection.commit()
+            ''' # ito po yung SQL script na mag-eedit naman sa DonorsInfo table sa pamamagitan ng DonorID 
 
-            print("Donation data updated successfully.") 
+            cursor.execute(donor_info_query, (name, age, date_birth, first_time, donor_id)) # ito po ay para i-run yung script na nakalagay sa query variable sa MySQL database
+            connection.commit() # ito po ay para gawin ang changes sa database
+
+            print("Donation data updated successfully.") # ito po ang magsasabi na nailagay na na-edit na ang database
 
         except mysql.connector.Error as err: # ito po ay sasalo sa magiging kung anumang error sa database 
             print(f"Error: {err}") # ito po ang magsasabi ng error na binibigay ng database 
@@ -227,19 +229,17 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                 cursor.close() # ito po ang magclo-close ng cursor ng SQL
                 connection.close() # tatanggalin na rin po nito ang connections once na matapos po ang lahat 
 
-    def delete_donation(self, donor_id):
+    def delete_donation(self, donor_id): # ito po ang method para makapag-delete sa database
         try:
-            connection, cursor = self.connection_cursor()
+            connection, cursor = self.connection_cursor() # ito po ay para magconnect sa MySQL
 
-            # Delete from DonorInfo first due to foreign key constraints
-            cursor.execute('DELETE FROM DonorInfo WHERE DonorID = %s', (donor_id,))
+            cursor.execute('DELETE FROM DonorInfo WHERE DonorID = %s', (donor_id,)) # ito po ay yung magdedelete sa DonorInfo table sa pamamagitan ng DonorID
         
-            # Then delete from Donors
-            cursor.execute('DELETE FROM Donors WHERE DonorID = %s', (donor_id,))
+            cursor.execute('DELETE FROM Donors WHERE DonorID = %s', (donor_id,)) # ito po ay yung magdedelete sa Donors table sa pamamagitan ng DonorID
 
-            connection.commit()
+            connection.commit() # ito po ay para gawin ang changes sa database
 
-            print("Donation data updated successfully.") 
+            print("Donation data deleted successfully.") # ito po ang magsasabi na nailagay na na-delete na ang database
 
         except mysql.connector.Error as err: # ito po ay sasalo sa magiging kung anumang error sa database 
             print(f"Error: {err}") # ito po ang magsasabi ng error na binibigay ng database 
@@ -249,14 +249,14 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                 cursor.close() # ito po ang magclo-close ng cursor ng SQL
                 connection.close() # tatanggalin na rin po nito ang connections once na matapos po ang lahat 
 
-def get_donation_data():
-    donor_id = input("Enter Donor ID: ")
-    name = input("Enter Donor Name: ")
-    blood_type_id = input("Enter Blood Type ID: ")
-    age = int(input("Enter Age: "))
-    date_birth = input("Enter Date of Birth (YYYY-MM-DD): ")
-    first_time = input("First Time Donor? (Yes/No): ")
-    return donor_id, name, blood_type_id, age, date_birth, first_time
+def get_donation_data(): # ito po ay function para hindi ulit ulit yung pagkuha ng required inputs 
+    donor_id = input("Enter Donor ID: ") # ito po ay para mag-input ng Donor ID
+    name = input("Enter Donor Name: ") # ito po ay para mag-input ng name ng Donor
+    blood_type_id = input("Enter Blood Type ID: ") # ito po ay para mag-input ng blood type
+    age = int(input("Enter Age: ")) # ito po ay para mag-input ng Age 
+    date_birth = input("Enter Date of Birth (YYYY-MM-DD): ") # ito po ay para mag-input ng birth date
+    first_time = input("First Time Donor? (Yes/No): ") # ito po ay para mag-input kung first time magdo-donate or hindi
+    return donor_id, name, blood_type_id, age, date_birth, first_time # ito po ibabalik ang inputs sa get_donation_data function para gamitin sa iba't ibang methods
 
 
 def DB_credentials(): # ito po ay para i-require ang user na ibigay the credentials ng SQL database 
@@ -279,45 +279,45 @@ def main(): # ito po yung main menu
         print("5. Edit Record") # ito po ay para ma-diplay ang menu option na i-view ang "Edit Record"
         print("6. Delete Record") # ito po ay para ma-diplay ang menu option na i-view ang "Delete Record"
 
-        choice = input("Enter your choice: ")
+        choice = input("Enter your choice: ") # ito po ay para makapili ng functions ng program na nakalagay sa menu
 
-        if choice == '1':
-            os.system('cls')
+        if choice == '1': # ito po ay kung iselect ang "1. Blood Donors"
+            os.system('cls') # ito po ay para i-clear and screen ng console
 
-            SQL_Blood_Donation_DB.display_donors()
+            SQL_Blood_Donation_DB.display_donors() # ito po ay para i-call ang display_donors method 
 
-        if choice == '2':
-            os.system('cls')
+        if choice == '2': # ito po ay kung iselect ang "2. Donors' Info"
+            os.system('cls') # ito po ay para i-clear and screen ng console
 
-            SQL_Blood_Donation_DB.donors_info()
+            SQL_Blood_Donation_DB.donors_info() # ito po ay para i-call ang donors_info method 
 
-        if choice == '3':
-            os.system('cls')
+        if choice == '3': # ito po ay kung iselect ang "3. Blood Types"
+            os.system('cls') # ito po ay para i-clear and screen ng console
 
-            SQL_Blood_Donation_DB.blood_types()
+            SQL_Blood_Donation_DB.blood_types() # ito po ay para i-call ang blood_types method 
 
-        if choice == '4':
-            os.system('cls')
+        if choice == '4': # ito po ay kung iselect ang "4. Add Record"
+            os.system('cls') # ito po ay para i-clear and screen ng console
 
-            donor_id, name, blood_type_id, age, date_birth, first_time = get_donation_data()
-            SQL_Blood_Donation_DB.add_donation(donor_id, name, blood_type_id, age, date_birth, first_time)
+            donor_id, name, blood_type_id, age, date_birth, first_time = get_donation_data() # kukunin po nito ang mga values galing sa get_donation_data function
+            SQL_Blood_Donation_DB.add_donation(donor_id, name, blood_type_id, age, date_birth, first_time) # gagamitin na po nito ang values para mag add ng donation data
 
-        if choice == '5':
-            os.system('cls')
+        if choice == '5': # ito po ay kung iselect ang "5. Edit Record"
+            os.system('cls') # ito po ay para i-clear and screen ng console
 
-            donor_id, name, blood_type_id, age, date_birth, first_time = get_donation_data()
-            SQL_Blood_Donation_DB.update_donation(donor_id, name, blood_type_id, age, date_birth, first_time)
+            donor_id, name, blood_type_id, age, date_birth, first_time = get_donation_data() # kukunin po nito ang mga values galing sa get_donation_data function
+            SQL_Blood_Donation_DB.update_donation(donor_id, name, blood_type_id, age, date_birth, first_time) # gagamitin na po nito ang values para mag i-edit ang isang donation data
 
-        if choice == '6':
-            os.system('cls')
+        if choice == '6': # ito po ay kung iselect ang "6. Delete Record"
+            os.system('cls') # ito po ay para i-clear and screen ng console
 
-            donor_id = input("Enter Donor ID: ")
+            donor_id = input("Enter Donor ID: ") # ito po ay para mag-input ng Donor ID na gustong i-delete
 
-            SQL_Blood_Donation_DB.delete_donation(donor_id)
+            SQL_Blood_Donation_DB.delete_donation(donor_id) # ito po ay para po ay para i-call ang delete_donation method 
 
-        elif choice == '0':
-            print("Exiting program")
-            break
+        elif choice == '0': # ito po ay kung iclo-close na ang program
+            print("Exiting program") # ito po ay magsasabi na nage-exit na ang program
+            break # ito po ang mage-exit ng program
 
 if __name__ == "__main__": # ito po ay para i-run yung program directly tuwing bubuksan
     DB_credentials() # ito po ay para magamit yung class 
