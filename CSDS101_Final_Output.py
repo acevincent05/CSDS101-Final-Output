@@ -12,37 +12,37 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
         self.host = host # ito po ay para ma-initialize at ma-encapsulate yung host ng MySQL database
         self.database = database # ito po ay para ma-initialize at ma-encapsulate yung schema ng MySQL database
 
-    @property
-    def get_user(self):
-        return self.user
+    @property # ito po ay para malaman ang value ng attribute
+    def get_user(self): # Ito po ay para kunin ang value ng 'user' property
+        return self.user # ito po ay binabalik ang value ng 'user'
     
-    @get_user.setter
-    def set_user(self, user):
-        self.user = user
+    @get_user.setter  # ito po ay para palitan ang value ng 'user'
+    def set_user(self, user):  # ito ay kumukuha ng bagong value na 'user'
+        self.user = user  # ito ay nag-assign  ng bagong value sa property na 'user'
 
-    @property
-    def get_password(self):
-        return self.password
+    @property # ito po ay para malaman ang value ng attribute
+    def get_password(self): # Ito po ay para kunin ang value ng 'password' property
+        return self.password # ito po ay binabalik ang value ng 'password'
 
-    @get_password.setter
-    def set_password(self, password):
-        self.password = password
+    @get_password.setter # ito po ay para palitan ang value ng 'password'
+    def set_password(self, password): # ito ay kumukuha ng bagong value na 'password'
+        self.password = password # ito po ay binabalik ang value ng 'password'
     
-    @property
-    def get_host(self):
-        return self.host
+    @property # ito po ay para malaman ang value ng attribute
+    def get_host(self): # Ito po ay para kunin ang value ng 'host' property
+        return self.host # ito po ay binabalik ang value ng 'host'
     
-    @get_host.setter
-    def set_host(self, host):
-        self.host = host
+    @get_host.setter # ito po ay para palitan ang value ng 'host'
+    def set_host(self, host): # ito ay kumukuha ng bagong value na 'host'
+        self.host = host # ito po ay binabalik ang value ng 'host'
 
-    @property
-    def get_database(self):
-        return self.database
+    @property  # ito po ay para malaman ang value ng attribute
+    def get_database(self):  # Ito po ay para kunin ang value ng 'database' property
+        return self.database  # ito po ay binabalik ang value ng 'database'
     
-    @get_database.setter
-    def set_database(self, database):
-        self.database = database
+    @get_database.setter # ito po ay para palitan ang value ng 'database'
+    def set_database(self, database): # ito ay kumukuha ng bagong value na 'database'
+        self.database = database # ito po ay binabalik ang value ng 'database'
 
     def connect(self): # ito po ay para magconnect sa MySQL 
         try: # ito po ay para sa tingnan kung succesful ang connection sa database
@@ -65,11 +65,11 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
         cursor = connected.cursor() # ito po ay para ilagay magamit na ang cursor
         return connected, cursor # ito po ay para  na ibigay sa connection_cursor(self) function ang cursor
 
-    def display_donors(self):
-        try:
-            connection, cursor = self.connection_cursor()
+    def display_donors(self): # ito po ay class para sa makita ang donors
+        try: # ito po ay sa pagcheck kung nagana ng walang error
+            connection, cursor = self.connection_cursor() # ito po ay para magconnect sa MySQL
 
-            query = '''
+            query = ''' 
                     SELECT 
                         d.DonorID,
                         di.Name,
@@ -82,30 +82,31 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                         BloodTypes bt ON d.BloodTypeID = bt.BloodTypeID
                     ORDER BY 
                         d.DonorID;
-                    '''
-            cursor.execute(query)
+                    ''' # ito po ay para sa SQL script na kukunin at ipagjo-join ang DonorInfo at BloodType table, 
+                        # dito po nai-apply ang relations kung saan may one-to-many relationship ang mga blood types 
+                        # sa kung kaninong donors
 
-            # retrieves all rows
-            rows = cursor.fetchall()
+            cursor.execute(query) # ito po ay para i-run yung script na nakalagay sa query variable sa MySQL database
 
-            print(f"{'Donor ID':<10} | {'Name':<15} | {'Blood Type':<5}") 
-            print("-" * 60)
+            rows = cursor.fetchall() # ito po ay para ma-retrevie lahat ng rows
 
-            # print each rows
-            for row in rows:
-                print(f"{row[0]:<10} | {row[1]:<15} | {row[2]:<5} ")  
+            print(f"{'Donor ID':<10} | {'Name':<15} | {'Blood Type':<5}")  # ito po ay para madisplay ang headers sa console
+            print("-" * 60) # ito po ay lines lang na idi-display para magseparate sa headers
 
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
+            for row in rows: # ito po ay para sa bawat laman ng rows na nakuha
+                print(f"{row[0]:<10} | {row[1]:<15} | {row[2]:<5} ")  # ito po yung magdi-display ng content ng bawat rows na may formatting po
 
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close()
+        except mysql.connector.Error as err: # ito po ay sasalo sa magiging kung anumang error sa database 
+            print(f"Error: {err}") # ito po ang magsasabi ng error na binibigay ng database 
 
-    def donors_info(self):
-        try:
-            connection, cursor = self.connection_cursor()
+        finally: # pagkatapos po ng functions, nagkaroon po ng error o hindi, ito po ang mangyayari
+            if connection.is_connected(): # ito po ang magche-check kung nakapagconnect nga po ba sa database
+                cursor.close() # ito po ang magclo-close ng cursor ng SQL
+                connection.close() # tatanggalin na rin po nito ang connections once na matapos po ang lahat
+
+    def donors_info(self): # ito po ang method na kukunin ang info ng donors
+        try: # ito po ay sa pagcheck kung nagana ng walang error
+            connection, cursor = self.connection_cursor() # ito po ay para magconnect sa MySQL
 
             query = '''
                     SELECT 
@@ -120,66 +121,63 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                         DonorInfo di ON d.DonorID = di.DonorID
                     ORDER BY 
                         d.DonorID;
-                    '''
-            cursor.execute(query)
+                    ''' # ito po ay SQL script para idisplay ang DonorInfo table na connected din sa Blood types 
+           
+            cursor.execute(query)# ito po ay para i-run yung script na nakalagay sa query variable sa MySQL database
 
-            # retrieves all rows
-            rows = cursor.fetchall()
+            rows = cursor.fetchall() # ito po ay para ma-retrevie lahat ng rows
 
-            print(f"{'Donor ID':<10} | {'Name':<20} | {'Age':<3} | {'Birth Date':<10} | {'First Time Donor':<6}") 
-            print("-" * 75)
+            print(f"{'Donor ID':<10} | {'Name':<20} | {'Age':<3} | {'Birth Date':<10} | {'First Time Donor':<6}") # ito po ay para madisplay ang headers sa console
+            print("-" * 75) # ito po ay lines lang na idi-display para magseparate sa headers
 
-            # print each rows
-            for row in rows:
-                print(f"{row[0]:<10} | {row[1]:<20} | {row[2]:<3} | {row[3]:<10} | {row[4]:<6}")  
+            for row in rows: # ito po ay para sa bawat laman ng rows na nakuha
+                print(f"{row[0]:<10} | {row[1]:<20} | {row[2]:<3} | {row[3]:<10} | {row[4]:<6}") # ito po yung magdi-display ng content ng bawat rows na may formatting po
 
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
 
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close()  
+        except mysql.connector.Error as err: # ito po ay sasalo sa magiging kung anumang error sa database 
+            print(f"Error: {err}") # ito po ang magsasabi ng error na binibigay ng database 
 
-    def blood_types(self):
-        try:
-            connection, cursor = self.connection_cursor()
+        finally: # pagkatapos po ng functions, nagkaroon po ng error o hindi, ito po ang mangyayari
+            if connection.is_connected(): # ito po ang magche-check kung nakapagconnect nga po ba sa database
+                cursor.close() # ito po ang magclo-close ng cursor ng SQL
+                connection.close() # tatanggalin na rin po nito ang connections once na matapos po ang lahat 
+
+    def blood_types(self): # ito po ang method na kukunin ang blood types
+        try: # ito po ay sa pagcheck kung nagana ng walang error
+            connection, cursor = self.connection_cursor() # ito po ay para magconnect sa MySQL
 
             query = '''
                     SELECT * FROM BloodTypes;
-                    '''
-            cursor.execute(query)
+                    ''' # ito po ay para idisplay ang contents ng BloodTypes table
+            
+            cursor.execute(query) # ito po ay para i-run yung script na nakalagay sa query variable sa MySQL database
 
-            # retrieves all rows
-            rows = cursor.fetchall()
+            rows = cursor.fetchall() # ito po ay para ma-retrevie lahat ng rows
 
-            print(f"{'Blood ID':<10} | {'Blood Type':<10}") 
-            print("-" * 50)
+            print(f"{'Blood ID':<10} | {'Blood Type':<10}") # ito po ay para madisplay ang headers sa console
+            print("-" * 50) # ito po ay lines lang na idi-display para magseparate sa headers
 
-            # print each rows
-            for row in rows:
-                print(f"{row[0]:<10} | {row[1]:<10}")  
+            for row in rows: # ito po ay para sa bawat laman ng rows na nakuha
+                print(f"{row[0]:<10} | {row[1]:<10}")  # ito po yung magdi-display ng content ng bawat rows na may formatting po
 
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
+        except mysql.connector.Error as err: # ito po ay sasalo sa magiging kung anumang error sa database 
+            print(f"Error: {err}") # ito po ang magsasabi ng error na binibigay ng database 
 
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close()  
+        finally: # pagkatapos po ng functions, nagkaroon po ng error o hindi, ito po ang mangyayari
+            if connection.is_connected(): # ito po ang magche-check kung nakapagconnect nga po ba sa database
+                cursor.close() # ito po ang magclo-close ng cursor ng SQL
+                connection.close() # tatanggalin na rin po nito ang connections once na matapos po ang lahat 
 
     def add_donation(self, donor_id, name, blood_type_id, age, date_birth, first_time):
-        try:
-            connection, cursor = self.connection_cursor()
+        try: # ito po ay sa pagcheck kung nagana ng walang error
+            connection, cursor = self.connection_cursor() # ito po ay para magconnect sa MySQL
 
-            # Insert into Donors
             donor_query = '''
                 INSERT INTO Donors (DonorID, Name, BloodTypeID)
                 VALUES (%s, %s, %s)
             '''
             cursor.execute(donor_query, (donor_id, name, blood_type_id))
 
-            # Insert into DonorInfo
             donor_info_query = '''
                 INSERT INTO DonorInfo (DonorID, Name, Age, DateOfBirth, FirstTimeDonor)
                 VALUES (%s, %s, %s, %s, %s)
@@ -189,13 +187,13 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
 
             print("Donation data added successfully.") 
 
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
+        except mysql.connector.Error as err: # ito po ay sasalo sa magiging kung anumang error sa database 
+            print(f"Error: {err}") # ito po ang magsasabi ng error na binibigay ng database 
 
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close()  
+        finally: # pagkatapos po ng functions, nagkaroon po ng error o hindi, ito po ang mangyayari
+            if connection.is_connected(): # ito po ang magche-check kung nakapagconnect nga po ba sa database
+                cursor.close() # ito po ang magclo-close ng cursor ng SQL
+                connection.close() # tatanggalin na rin po nito ang connections once na matapos po ang lahat 
 
 
     def update_donation(self, donor_id, name, blood_type_id, age, date_birth, first_time):
@@ -221,13 +219,13 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
 
             print("Donation data updated successfully.") 
 
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
+        except mysql.connector.Error as err: # ito po ay sasalo sa magiging kung anumang error sa database 
+            print(f"Error: {err}") # ito po ang magsasabi ng error na binibigay ng database 
 
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close() 
+        finally: # pagkatapos po ng functions, nagkaroon po ng error o hindi, ito po ang mangyayari
+            if connection.is_connected(): # ito po ang magche-check kung nakapagconnect nga po ba sa database
+                cursor.close() # ito po ang magclo-close ng cursor ng SQL
+                connection.close() # tatanggalin na rin po nito ang connections once na matapos po ang lahat 
 
     def delete_donation(self, donor_id):
         try:
@@ -243,13 +241,13 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
 
             print("Donation data updated successfully.") 
 
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
+        except mysql.connector.Error as err: # ito po ay sasalo sa magiging kung anumang error sa database 
+            print(f"Error: {err}") # ito po ang magsasabi ng error na binibigay ng database 
 
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close() 
+        finally: # pagkatapos po ng functions, nagkaroon po ng error o hindi, ito po ang mangyayari
+            if connection.is_connected(): # ito po ang magche-check kung nakapagconnect nga po ba sa database
+                cursor.close() # ito po ang magclo-close ng cursor ng SQL
+                connection.close() # tatanggalin na rin po nito ang connections once na matapos po ang lahat 
 
 def get_donation_data():
     donor_id = input("Enter Donor ID: ")
