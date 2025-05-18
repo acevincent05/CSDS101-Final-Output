@@ -198,6 +198,38 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                 connection.close()  
 
 
+    def update_donation(self, donor_id, name, blood_type_id, age, date_birth, first_time):
+        try:
+            connection, cursor = self.connection_cursor()
+
+            # Insert into Donors
+            donor_query = '''
+                UPDATE Donors
+                SET Name = %s, BloodTypeID = %s
+                WHERE DonorID = %s
+            '''
+            cursor.execute(donor_query, (name, blood_type_id, donor_id))
+
+            # Update DonorInfo table
+            donor_info_query = '''
+                UPDATE DonorInfo
+                SET Name = %s, Age = %s, DateOfBirth = %s, FirstTimeDonor = %s
+                WHERE DonorID = %s
+            '''
+            cursor.execute(donor_info_query, (name, age, date_birth, first_time, donor_id))
+            connection.commit()
+
+            print("Donation data updated successfully.") 
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close() 
+
+
 def get_donation_data():
     donor_id = input("Enter Donor ID: ")
     name = input("Enter Donor Name: ")
@@ -250,6 +282,12 @@ def main(): # ito po yung main menu
 
             donor_id, name, blood_type_id, age, date_birth, first_time = get_donation_data()
             SQL_Blood_Donation_DB.add_donation(donor_id, name, blood_type_id, age, date_birth, first_time)
+
+        if choice == '5':
+            os.system('cls')
+
+            donor_id, name, blood_type_id, age, date_birth, first_time = get_donation_data()
+            SQL_Blood_Donation_DB.update_donation(donor_id, name, blood_type_id, age, date_birth, first_time)
 
         elif choice == '0':
             print("Exiting program")
