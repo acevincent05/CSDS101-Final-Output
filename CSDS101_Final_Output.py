@@ -67,12 +67,12 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
             # retrieves all rows
             rows = cursor.fetchall()
 
-            print(f"{'Donor ID':<10} | {'Name':<20} | {'Blood Type':<10}") 
+            print(f"{'Donor ID':<5} | {'Name':<10} | {'Blood Type':<5}") 
             print("-" * 60)
 
             # print each rows
             for row in rows:
-                print(f"{row[0]:<10} | {row[1]:<20} | {row[2]:<10} ")  
+                print(f"{row[0]:<5} | {row[1]:<10} | {row[2]:<5} ")  
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -81,6 +81,47 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
             if connection.is_connected():
                 cursor.close()
                 connection.close()
+
+    def donors_info(self):
+        try:
+            connection, cursor = self.connection_cursor()
+
+            query = '''
+                    SELECT 
+                        d.DonorID,
+                        di.Name,
+                        di.Age,
+                        DATE_FORMAT(di.DateOfBirth, '%m-%d-%Y') AS DateOfBirth,
+                        di.FirstTimeDonor
+                    FROM 
+                        Donors d
+                    JOIN 
+                        DonorInfo di ON d.DonorID = di.DonorID
+                    ORDER BY 
+                        d.DonorID;
+                    '''
+            cursor.execute(query)
+
+            # retrieves all rows
+            rows = cursor.fetchall()
+
+            print(f"{'Donor ID':<10} | {'Name':<20} | {'Age':<15} | {'Birth Date':<10} | {'First Time Donor':<6}") 
+            print("-" * 60)
+
+            # print each rows
+            for row in rows:
+                print(f"{row[0]:<10} | {row[1]:<20} | {row[2]:<15} | {row[3]:<10} | {row[4]:<6}")  
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+    
+
 
     def connect(self): # ito po ay para magconnect sa MySQL 
         try: # ito po ay para sa tingnan kung succesful ang connection sa database
@@ -103,17 +144,15 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
         cursor = connected.cursor() # ito po ay para ilagay magamit na ang cursor
         return connected, cursor # ito po ay para  na ibigay sa connection_cursor(self) function ang cursor
 
-
-
 def DB_credentials(): # ito po ay para i-require ang user na ibigay the credentials ng SQL database 
     user = input('Enter user: ') # ito po ay para kunin ang user
     password = input('Enter password: ') # ito po ay para kunin ang password
     host = input('Enter host: ') # ito po ay para kunin ang host
     db_select = input('Enter Database: ') # ito po ay para kunin ang schema 
 
-    # SQL_Blood_Donation_DB = Blood_Donation_DB('root', 'CS2025EU', 'localhost', 'Blood_Donation')
     global SQL_Blood_Donation_DB # ito po ay para ma-access ang Blood_Donation_DB sa menu
-    SQL_Blood_Donation_DB = Blood_Donation_DB(user, password, host, db_select) # ito po ay para magamit yung class Blood_Donation_DB 
+    SQL_Blood_Donation_DB = Blood_Donation_DB('root', 'CS2025EU', 'localhost', 'Blood_Donation')
+    #SQL_Blood_Donation_DB = Blood_Donation_DB(user, password, host, db_select) # ito po ay para magamit yung class Blood_Donation_DB 
 
 def main(): # ito po yung main menu
     while True: # ito po ay para ma-display lagi yung main menu 
@@ -132,13 +171,15 @@ def main(): # ito po yung main menu
 
             SQL_Blood_Donation_DB.display_donors()
 
+        if choice == '2':
+            os.system('cls')
+
+            SQL_Blood_Donation_DB.donors_info()
+
         elif choice == '0':
             print("Exiting program")
             break
-        
-        else:
-            print("Invalid choice. Please try again.")
 
 if __name__ == "__main__": # ito po ay para i-run yung program directly tuwing bubuksan
-    DB_credentials() # ito po ay para magamit yung class 
+    #DB_credentials() # ito po ay para magamit yung class 
     main() # ito po ay para mag-open yung main menu
