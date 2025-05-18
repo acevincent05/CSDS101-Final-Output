@@ -58,9 +58,9 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                     JOIN 
                         DonorInfo di ON d.DonorID = di.DonorID
                     JOIN 
-                        BloodTypes bt ON d.BloodTypeID = bt.BloodTypeID;
+                        BloodTypes bt ON d.BloodTypeID = bt.BloodTypeID
                     ORDER BY 
-	                    d.DonorID;
+                        d.DonorID;
                     '''
             cursor.execute(query)
 
@@ -118,10 +118,7 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
         finally:
             if connection.is_connected():
                 cursor.close()
-                connection.close()
-
-    
-
+                connection.close()  
 
     def connect(self): # ito po ay para magconnect sa MySQL 
         try: # ito po ay para sa tingnan kung succesful ang connection sa database
@@ -181,5 +178,5 @@ def main(): # ito po yung main menu
             break
 
 if __name__ == "__main__": # ito po ay para i-run yung program directly tuwing bubuksan
-    #DB_credentials() # ito po ay para magamit yung class 
+    DB_credentials() # ito po ay para magamit yung class 
     main() # ito po ay para mag-open yung main menu
