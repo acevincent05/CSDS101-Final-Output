@@ -44,6 +44,44 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
     def set_database(self, database):
         self.database = database
 
+    def display_donors(self):
+        try:
+            connection, cursor = self.connection_cursor()
+
+            query = '''
+                    SELECT 
+                        d.DonorID,
+                        di.Name,
+                        bt.BloodType
+                    FROM 
+                        Donors d
+                    JOIN 
+                        DonorInfo di ON d.DonorID = di.DonorID
+                    JOIN 
+                        BloodTypes bt ON d.BloodTypeID = bt.BloodTypeID;
+                    ORDER BY 
+	                    d.DonorID;
+                    '''
+            cursor.execute(query)
+
+            # retrieves all rows
+            rows = cursor.fetchall()
+
+            print(f"{'Donor ID':<10} | {'Name':<20} | {'Blood Type':<10}") 
+            print("-" * 60)
+
+            # print each rows
+            for row in rows:
+                print(f"{row[0]:<10} | {row[1]:<20} | {row[2]:<10} ")  
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
     def connect(self): # ito po ay para magconnect sa MySQL 
         try: # ito po ay para sa tingnan kung succesful ang connection sa database
             con = mysql.connector.connect(user=self.user, # ito po ay para magamit ang nakuhang "user" sa class initialization
@@ -74,7 +112,7 @@ def DB_credentials(): # ito po ay para i-require ang user na ibigay the credenti
     db_select = input('Enter Database: ') # ito po ay para kunin ang schema 
 
     # SQL_Blood_Donation_DB = Blood_Donation_DB('root', 'CS2025EU', 'localhost', 'Blood_Donation')
-    global Blood_Donation_DB # ito po ay para ma-access ang SQL_Blood_Donation_DB sa menu
+    global SQL_Blood_Donation_DB # ito po ay para ma-access ang Blood_Donation_DB sa menu
     SQL_Blood_Donation_DB = Blood_Donation_DB(user, password, host, db_select) # ito po ay para magamit yung class Blood_Donation_DB 
 
 def main(): # ito po yung main menu
@@ -92,12 +130,15 @@ def main(): # ito po yung main menu
         if choice == '1':
             os.system('cls')
 
+            SQL_Blood_Donation_DB.display_donors()
+
         elif choice == '0':
             print("Exiting program")
             break
+        
         else:
             print("Invalid choice. Please try again.")
 
 if __name__ == "__main__": # ito po ay para i-run yung program directly tuwing bubuksan
-    # DB_credentials() # ito po ay para magamit yung class 
-    # main() # ito po ay para mag-open yung main menu
+    DB_credentials() # ito po ay para magamit yung class 
+    main() # ito po ay para mag-open yung main menu
