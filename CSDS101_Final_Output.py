@@ -67,12 +67,12 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
             # retrieves all rows
             rows = cursor.fetchall()
 
-            print(f"{'Donor ID':<5} | {'Name':<10} | {'Blood Type':<5}") 
+            print(f"{'Donor ID':<10} | {'Name':<15} | {'Blood Type':<5}") 
             print("-" * 60)
 
             # print each rows
             for row in rows:
-                print(f"{row[0]:<5} | {row[1]:<10} | {row[2]:<5} ")  
+                print(f"{row[0]:<10} | {row[1]:<15} | {row[2]:<5} ")  
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -105,12 +105,34 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
             # retrieves all rows
             rows = cursor.fetchall()
 
-            print(f"{'Donor ID':<10} | {'Name':<20} | {'Age':<15} | {'Birth Date':<10} | {'First Time Donor':<6}") 
-            print("-" * 60)
+            print(f"{'Donor ID':<10} | {'Name':<20} | {'Age':<3} | {'Birth Date':<10} | {'First Time Donor':<6}") 
+            print("-" * 75)
 
             # print each rows
             for row in rows:
-                print(f"{row[0]:<10} | {row[1]:<20} | {row[2]:<15} | {row[3]:<10} | {row[4]:<6}")  
+                print(f"{row[0]:<10} | {row[1]:<20} | {row[2]:<3} | {row[3]:<10} | {row[4]:<6}")  
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+    def blood_types(self):
+        try:
+            connection, cursor = self.connection_cursor()
+
+            query = '''
+                    SELECT * FROM BloodTypes;
+                    '''
+            cursor.execute(query)
+
+            # retrieves all rows
+            rows = cursor.fetchall()
+
+            print(f"{'Blood ID':<10} | {'Blood Type':<10}") 
+            print("-" * 50)
+
+            # print each rows
+            for row in rows:
+                print(f"{row[0]:<10} | {row[1]:<10}")  
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -172,6 +194,11 @@ def main(): # ito po yung main menu
             os.system('cls')
 
             SQL_Blood_Donation_DB.donors_info()
+
+        if choice == '3':
+            os.system('cls')
+
+            SQL_Blood_Donation_DB.blood_types()
 
         elif choice == '0':
             print("Exiting program")
