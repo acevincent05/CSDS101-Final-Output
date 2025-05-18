@@ -185,6 +185,7 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                 VALUES (%s, %s, %s, %s, %s)
             '''
             cursor.execute(donor_info_query, (donor_id, name, age, date_birth, first_time))
+            connection.commit()
 
             print("Donation data added successfully.") 
 
