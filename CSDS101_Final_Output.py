@@ -65,7 +65,7 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
         cursor = connected.cursor() # ito po ay para ilagay magamit na ang cursor
         return connected, cursor # ito po ay para  na ibigay sa connection_cursor(self) function ang cursor
 
-    
+
 
 def DB_credentials(): # ito po ay para i-require ang user na ibigay the credentials ng SQL database 
     user = input('Enter user: ') # ito po ay para kunin ang user
@@ -73,7 +73,7 @@ def DB_credentials(): # ito po ay para i-require ang user na ibigay the credenti
     host = input('Enter host: ') # ito po ay para kunin ang host
     db_select = input('Enter Database: ') # ito po ay para kunin ang schema 
 
-    # SQL_Blood_Donation_DB = Blood_Donation_DB('root', 'CS2025EU', 'localhost', 'Pre_Enrollees')
+    # SQL_Blood_Donation_DB = Blood_Donation_DB('root', 'CS2025EU', 'localhost', 'Blood_Donation')
     global Blood_Donation_DB # ito po ay para ma-access ang SQL_Blood_Donation_DB sa menu
     SQL_Blood_Donation_DB = Blood_Donation_DB(user, password, host, db_select) # ito po ay para magamit yung class Blood_Donation_DB 
 
