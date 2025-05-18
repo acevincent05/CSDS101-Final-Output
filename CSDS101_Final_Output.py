@@ -60,6 +60,12 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
             else: # ito po ay para masalo ang iba pang errors
                 print(err) # ito po ay para ibigay ang specific error na meron sa SQL database
 
+    def connection_cursor(self): # ito po ay para i-call ang  connect method at cursor 
+        connected = self.connect()  # ito po ay para ilagay ang connect method sa "connected" variable
+        cursor = connected.cursor() # ito po ay para ilagay magamit na ang cursor
+        return connected, cursor # ito po ay para  na ibigay sa connection_cursor(self) function ang cursor
+
+    
 
 def DB_credentials(): # ito po ay para i-require ang user na ibigay the credentials ng SQL database 
     user = input('Enter user: ') # ito po ay para kunin ang user
