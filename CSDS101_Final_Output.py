@@ -44,6 +44,27 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
     def set_database(self, database):
         self.database = database
 
+    def connect(self): # ito po ay para magconnect sa MySQL 
+        try: # ito po ay para sa tingnan kung succesful ang connection sa database
+            con = mysql.connector.connect(user=self.user, # ito po ay para magamit ang nakuhang "user" sa class initialization
+                                        password=self.password,  # ito po ay para magamit ang nakuhang "password" sa class initialization
+                                        host=self.host, # ito po ay para magamit ang nakuhang "host" sa class initialization
+                                        database=self.database) # ito po ay para magamit ang nakuhang "database" sa class initialization
+            print('Connection successful') # ito po ay para malaman na successful ang pag-connect sa database
+            return con # ito po ay para ibalik ang naging successful connection sa connect function
+        except mysql.connector.Error as err: # ito po ay saluhin ng ang error sa pag-connect sa database
+            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR: # ito po ay para i-handle ang maling input ng credentials sa database
+                print("Something is wrong with your user name or password") # ito po para sabihin na may mali sa user or password 
+            elif err.errno == errorcode.ER_BAD_DB_ERROR: # ito po ay para i-handle ang pag connect sa non-existent database
+                print("Database does not exist") # ito po para sabihin na wala sa SQL yung database
+            else: # ito po ay para masalo ang iba pang errors
+                print(err) # ito po ay para ibigay ang specific error na meron sa SQL database
+
+    def connection_cursor(self): # ito po ay para i-call ang  connect method at cursor 
+        connected = self.connect()  # ito po ay para ilagay ang connect method sa "connected" variable
+        cursor = connected.cursor() # ito po ay para ilagay magamit na ang cursor
+        return connected, cursor # ito po ay para  na ibigay sa connection_cursor(self) function ang cursor
+
     def display_donors(self):
         try:
             connection, cursor = self.connection_cursor()
@@ -142,26 +163,7 @@ class Blood_Donation_DB: # ito po yung class na kailangan para magfunction yung 
                 cursor.close()
                 connection.close()  
 
-    def connect(self): # ito po ay para magconnect sa MySQL 
-        try: # ito po ay para sa tingnan kung succesful ang connection sa database
-            con = mysql.connector.connect(user=self.user, # ito po ay para magamit ang nakuhang "user" sa class initialization
-                                        password=self.password,  # ito po ay para magamit ang nakuhang "password" sa class initialization
-                                        host=self.host, # ito po ay para magamit ang nakuhang "host" sa class initialization
-                                        database=self.database) # ito po ay para magamit ang nakuhang "database" sa class initialization
-            print('Connection successful') # ito po ay para malaman na successful ang pag-connect sa database
-            return con # ito po ay para ibalik ang naging successful connection sa connect function
-        except mysql.connector.Error as err: # ito po ay saluhin ng ang error sa pag-connect sa database
-            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR: # ito po ay para i-handle ang maling input ng credentials sa database
-                print("Something is wrong with your user name or password") # ito po para sabihin na may mali sa user or password 
-            elif err.errno == errorcode.ER_BAD_DB_ERROR: # ito po ay para i-handle ang pag connect sa non-existent database
-                print("Database does not exist") # ito po para sabihin na wala sa SQL yung database
-            else: # ito po ay para masalo ang iba pang errors
-                print(err) # ito po ay para ibigay ang specific error na meron sa SQL database
 
-    def connection_cursor(self): # ito po ay para i-call ang  connect method at cursor 
-        connected = self.connect()  # ito po ay para ilagay ang connect method sa "connected" variable
-        cursor = connected.cursor() # ito po ay para ilagay magamit na ang cursor
-        return connected, cursor # ito po ay para  na ibigay sa connection_cursor(self) function ang cursor
 
 def DB_credentials(): # ito po ay para i-require ang user na ibigay the credentials ng SQL database 
     user = input('Enter user: ') # ito po ay para kunin ang user
